@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>长安三万里·唐诗地理启示录</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Georgia', 'Times New Roman', serif; background: #f2e9db; }
+        .pages-container { height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; background: #fff9ef; }
+        .page { scroll-snap-align: start; min-height: 100vh; padding: 50px 24px 60px; display: flex; flex-direction: column; justify-content: center; background: #fffef5; border-bottom: 1px solid #ede3ce; }
+        .tag { font-size: 14px; background: #d9c7a7; padding: 6px 14px; border-radius: 20px; display: inline-block; width: fit-content; margin-bottom: 20px; color: #3f2e1e; }
+        h1 { font-size: 38px; font-weight: 800; color: #794f29; line-height: 1.2; margin-bottom: 16px; }
+        h2 { font-size: 26px; margin: 20px 0 12px; color: #b25d2a; border-left: 5px solid #e2b87c; padding-left: 14px; }
+        .poem { background: #faf3e0; padding: 20px; border-radius: 32px; font-style: italic; margin: 16px 0; text-align: center; font-size: 17px; color: #4f3a24; }
+        .card { background: #f7ede0; border-radius: 28px; padding: 18px; margin: 12px 0; }
+        .click-item { background: white; border-radius: 40px; padding: 14px 18px; margin: 10px 0; border: 1px solid #e7d7be; text-align: center; font-weight: 500; cursor: pointer; }
+        .click-item:active { background: #e9dbc9; transform: scale(0.98); }
+        .feedback { margin-top: 12px; font-size: 15px; padding: 12px; border-radius: 20px; background: #e9dbc9; display: none; }
+        .footer { font-size: 11px; text-align: center; margin-top: 30px; color: #ad9a7a; }
+        .emoji-big { font-size: 58px; text-align: center; margin: 16px 0; }
+        p { font-size: 16px; line-height: 1.5; }
+        .drag-slider { background: #f4eadb; border-radius: 60px; padding: 12px 20px; margin: 20px 0; text-align: center; touch-action: pan-y; }
+        .slider-value { font-size: 18px; font-weight: bold; margin-top: 12px; color: #b25d2a; }
+    </style>
+</head>
+<body>
+<div class="pages-container">
+    <!-- 第1页：封面 -->
+    <div class="page">
+        <div class="tag">📜 文化现象</div>
+        <h1>长安三万里，<br>诗与地理的共鸣</h1>
+        <div class="poem">“黄河远上白云间，一片孤城万仞山。”<br>—— 王之涣《凉州词》</div>
+        <p>《长安三万里》热映后，“跟着唐诗去旅行”成为热潮。诗人用脚步丈量大地，名篇背后皆有真实的地理骨架。</p>
+        <div class="emoji-big">🏔️🌊🏜️</div>
+        <div class="footer">👇 滑动浏览 · 核心观点：唐诗基于真实山川驿道</div>
+    </div>
+
+    <!-- 第2页：交互① 点击地名弹诗句 -->
+    <div class="page">
+        <h2>🗺️ 交互①：点击地名</h2>
+        <div class="sub">点击任意地名，浮现对应诗句</div>
+        <div class="click-item" data-loc="玉门关">📍 玉门关</div>
+        <div class="click-item" data-loc="三峡">📍 长江三峡</div>
+        <div class="click-item" data-loc="天山">📍 天山</div>
+        <div id="geoMsg" class="feedback"></div>
+        <div class="card">💡 《全唐诗》涉及地名超2000处，地理塑造了边塞的苍凉与江南的温婉。</div>
+    </div>
+
+    <!-- 第3页：交互② 长按查看深层解读 -->
+    <div class="page">
+        <h2>📖 交互②：长按解读</h2>
+        <div class="click-item" id="longPressPoem" style="background:#f5efe0;">🌄 长按我 → “春风不度玉门关”</div>
+        <div id="poemLongMsg" class="feedback"></div>
+        <div class="poem">“羌笛何须怨杨柳，春风不度玉门关”</div>
+        <div class="card">📍 玉门关位于甘肃敦煌，温带荒漠气候，夏季风难以到达。诗人以地理现实写边塞之苦。</div>
+    </div>
+
+    <!-- 第4页：交互③ 拖拽滑动选择（模拟“诗中地理纬度”） -->
+    <div class="page">
+        <h2>🧭 交互③：拖拽滑动</h2>
+        <div class="sub">左右/上下拖动滑块，选择地理风格</div>
+        <div class="drag-slider" id="sliderZone" style="touch-action: pan-y; user-select: none;">
+            <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+                <span style="background:#e0d5be; padding:8px 16px; border-radius:40px;">🌾 边塞</span>
+                <span style="background:#e0d5be; padding:8px 16px; border-radius:40px;">🏞️ 山水</span>
+                <span style="background:#e0d5be; padding:8px 16px; border-radius:40px;">🌸 田园</span>
+            </div>
+            <div style="margin: 20px 0; text-align:center;">
+                <input type="range" id="geoSlider" min="0" max="100" value="50" style="width:100%; margin:12px 0;">
+                <div id="sliderResult" class="slider-value">⬅️ 拖拽滑块 → 解锁诗风解读</div>
+            </div>
+        </div>
+        <div class="footer">拖拽即触发交互 · 展示唐诗地理多样性</div>
+    </div>
+
+    <!-- 第5页：观点总结 -->
+    <div class="page">
+        <h2>🌄 行走的诗，真实的地</h2>
+        <p>李白“朝辞白帝彩云间”对应长江流速与三峡地貌；杜甫“窗含西岭千秋雪”指向成都西部横断山脉。近年学者系统整理《唐诗地图》，文学与地理碰撞，让经典新生。</p>
+        <div class="poem">文化启示：诗歌是大地上的另一种刻度。</div>
+        <div class="footer">参考：李德辉《唐代交通与文学》/ 纪录片《跟着唐诗去旅行》</div>
+    </div>
+</div>
+
+<script>
+    // 交互①：点击地名
+    const items=document.querySelectorAll('[data-loc]');
+    const geoMsg=document.getElementById('geoMsg');
+    const poemMap={玉门关:'“羌笛何须怨杨柳，春风不度玉门关。”—— 温带荒漠气候，季风无法抵达',三峡:'“两岸猿声啼不住，轻舟已过万重山。”—— 长江三峡峡谷地貌',天山:'“五月天山雪，无花只有寒。”—— 天山高海拔积雪真实写照'};
+    items.forEach(el=>{ el.onclick=()=>{ const loc=el.getAttribute('data-loc'); geoMsg.style.display='block'; geoMsg.innerHTML=`📖 ${poemMap[loc]||'经典诗篇之地'}`; }; });
+    // 交互②：长按
+    const longBtn=document.getElementById('longPressPoem'), longMsgDiv=document.getElementById('poemLongMsg');
+    let t2=null;
+    longBtn.ontouchstart=()=>{ t2=setTimeout(()=>{ longMsgDiv.style.display='block'; longMsgDiv.innerHTML='🔍 长按解读：“春风不度”暗示玉门关位于非季风区，唐代戍边士兵以此抒发乡愁，地理决定诗意。'; longBtn.style.background="#e0d5be"; },800); };
+    longBtn.ontouchend=()=>{ clearTimeout(t2); longBtn.style.background="#f5efe0"; };
+    longBtn.ontouchmove=()=>{ clearTimeout(t2); };
+    longBtn.onmousedown=()=>{ t2=setTimeout(()=>{ longMsgDiv.style.display='block'; longMsgDiv.innerHTML='🔍 长按解读：“春风不度”暗示玉门关位于非季风区，地理决定诗意。'; longBtn.style.background="#e0d5be"; },800); };
+    longBtn.onmouseup=()=>{ clearTimeout(t2); longBtn.style.background="#f5efe0"; };
+    // 交互③：拖拽滑块
+    const slider=document.getElementById('geoSlider');
+    const sliderResult=document.getElementById('sliderResult');
+    slider.oninput=function(){ let val=this.value; if(val<33) sliderResult.innerHTML='🌾 边塞诗风：苍凉雄浑，如“大漠孤烟直”'; else if(val<66) sliderResult.innerHTML='🏞️ 山水诗风：空灵清幽，如“明月松间照”'; else sliderResult.innerHTML='🌸 田园诗风：恬淡闲适，如“把酒话桑麻”'; };
+    slider.dispatchEvent(new Event('input'));
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>太空水稻·全生命周期实验</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; background: #e9f0e6; }
+        .pages-container { height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; background: #fefce6; }
+        .page { scroll-snap-align: start; min-height: 100vh; padding: 50px 24px 60px; display: flex; flex-direction: column; justify-content: center; background: #fffef7; border-bottom: 1px solid #e2e0c8; }
+        .tag { font-size: 14px; color: #2b7a3e; font-weight: 600; background: #e0f3e4; display: inline-block; padding: 6px 14px; border-radius: 30px; margin-bottom: 20px; align-self: flex-start; }
+        h1 { font-size: 38px; font-weight: 800; line-height: 1.2; margin-bottom: 20px; color: #1c3b1f; }
+        h2 { font-size: 26px; font-weight: 700; margin: 20px 0 12px; color: #2a5c2e; }
+        .sub { font-size: 16px; color: #4a5b40; margin-bottom: 24px; border-left: 4px solid #86b37b; padding-left: 14px; }
+        .card { background: #f2f8ef; border-radius: 28px; padding: 20px; margin: 16px 0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+        .stat { font-size: 42px; font-weight: 800; color: #2e7d32; }
+        button { background: #3c8d40; border: none; padding: 14px; border-radius: 40px; color: white; font-weight: 600; font-size: 18px; margin-top: 20px; cursor: pointer; width: 100%; }
+        button:active { transform: scale(0.98); background: #1f5e23; }
+        .click-card { background: white; border-radius: 24px; padding: 18px; border: 1px solid #d9e0cf; text-align: center; margin: 12px 0; cursor: pointer; font-size: 17px; font-weight: 500; }
+        .click-card:active { background: #eef5ea; transform: scale(0.98); }
+        .hidden-msg { margin-top: 12px; font-size: 15px; background: #e0f0dd; padding: 12px; border-radius: 20px; display: none; line-height: 1.4; }
+        .quote { font-style: italic; padding: 18px; background: #fcf9e1; border-radius: 24px; margin: 20px 0; font-size: 16px; }
+        .footer { font-size: 12px; text-align: center; color: #8b8f7a; margin-top: 30px; }
+        .emoji-big { font-size: 64px; text-align: center; margin: 16px 0; }
+        p { font-size: 16px; line-height: 1.5; }
+        .double-tap-area { background: #e8f0e3; border-radius: 28px; padding: 20px; text-align: center; margin-top: 16px; }
+    </style>
+</head>
+<body>
+<div class="pages-container">
+    <!-- 第1页：封面 -->
+    <div class="page">
+        <span class="tag">🌾 中国空间站</span>
+        <h1>太空水稻<br>“吐水”了！</h1>
+        <div class="sub">问天舱实验新发现 · 全生命周期首次完成</div>
+        <div class="emoji-big">🚀🌾</div>
+        <div class="card"><span class="stat">120天</span> 在轨培养 · 种子到种子</div>
+        <p>2025年初，实验单元传回图像：微重力下水稻出现独特“吐水”现象，叶片边缘凝结水滴。这是继2023年首次收获太空种子后的重要延续观察。</p>
+        <div class="footer">👇 向上/下滑动浏览 · 来源：中科院空间应用中心</div>
+    </div>
+
+    <!-- 第2页：交互① 点击弹窗 -->
+    <div class="page">
+        <h2>📡 交互①：点击揭秘</h2>
+        <div class="sub">点击下方卡片，查看科学原理</div>
+        <div class="click-card" id="revealBtn1">🌟 点击：水稻为何“吐水”？</div>
+        <div id="msg1" class="hidden-msg">💧 微重力下水分无法自然下渗，根部压力导致水从叶片水孔排出，这是植株健康的标志！</div>
+        <div class="click-card" id="revealBtn2">🧬 点击：太空水稻 vs 地球水稻</div>
+        <div id="msg2" class="hidden-msg">🔬 太空水稻矮化、早开花，但籽粒饱满，营养品质无显著差异。微重力影响木质素合成。</div>
+        <div class="quote">“太空农业将为深空探测提供食物保障。”</div>
+    </div>
+
+    <!-- 第3页：交互② 长按显示 -->
+    <div class="page">
+        <h2>📊 关键数据里程碑</h2>
+        <div class="card">
+            <div>🌱 2022年 问天舱启动实验</div>
+            <div style="height:8px; background:#e2e0c8; margin:8px 0; border-radius:5px;"><div style="width:100%; background:#3c8d40; height:8px; border-radius:5px;"></div></div>
+            <div>🌾 2023年 首次收获太空种子</div>
+            <div style="height:8px; background:#e2e0c8; margin:8px 0; border-radius:5px;"><div style="width:100%; background:#3c8d40; height:8px; border-radius:5px;"></div></div>
+            <div>💧 2025年 “吐水”机制新发现</div>
+            <div style="height:8px; background:#e2e0c8; margin:8px 0; border-radius:5px;"><div style="width:70%; background:#6f9e3a; height:8px; border-radius:5px;"></div></div>
+        </div>
+        <div class="click-card" id="longPressCard" style="background:#f5efe0;">📱 <strong>👆 长按我2秒</strong>（交互②：长按触发）</div>
+        <div id="longMsg" class="hidden-msg">🔬 长按解锁：空间站使用LED特殊光谱促进水稻在微重力下正常抽穗！</div>
+    </div>
+
+    <!-- 第4页：交互③ 双击点赞 -->
+    <div class="page">
+        <h2>👍 交互③：双击点赞</h2>
+        <div class="double-tap-area" id="doubleTapArea">
+            <div class="emoji-big">🌾❤️</div>
+            <p style="font-weight:bold;">双击这里为科学家点赞</p>
+            <p id="likeCountDisplay" style="font-size:28px; font-weight:800; color:#2e7d32; margin-top:12px;">0</p>
+            <p style="font-size:14px; color:#666;">（快速点击两下）</p>
+        </div>
+        <div class="footer">真实数据来源：载人航天工程办公室</div>
+    </div>
+
+    <!-- 第5页：观点总结 -->
+    <div class="page">
+        <h2>🔭 观点：太空农业未来已来</h2>
+        <p>从“东方红”到“太空水稻吐水”，中国空间站正在解锁长期驻留的生命保障技术。实验水稻品种“小薇”为建立空间生态圈提供关键数据。</p>
+        <div class="card"><span style="font-weight:bold;">🎯 核心价值</span><br>空间植物培养 → 月球/火星基地食物自给 → 深空探索基石</div>
+        <div class="emoji-big">🌍✋🌾</div>
+        <div class="footer">信息基于央视新闻/中科院官网报道</div>
+    </div>
+</div>
+
+<script>
+    // 交互①：点击
+    const b1=document.getElementById('revealBtn1'), m1=document.getElementById('msg1');
+    const b2=document.getElementById('revealBtn2'), m2=document.getElementById('msg2');
+    b1.onclick=()=>{ m1.style.display=m1.style.display==='block'?'none':'block'; };
+    b2.onclick=()=>{ m2.style.display=m2.style.display==='block'?'none':'block'; };
+    // 交互②：长按
+    const longCard=document.getElementById('longPressCard'), longMsg=document.getElementById('longMsg');
+    let timer=null;
+    const showLong=()=>{ longMsg.style.display='block'; longCard.style.background="#e0d5be"; };
+    longCard.ontouchstart=(e)=>{ timer=setTimeout(showLong,800); };
+    longCard.ontouchend=()=>{ clearTimeout(timer); setTimeout(()=>{ longCard.style.background="#f5efe0"; },100); };
+    longCard.ontouchmove=()=>{ clearTimeout(timer); };
+    // PC鼠标支持
+    longCard.onmousedown=()=>{ timer=setTimeout(showLong,800); };
+    longCard.onmouseup=()=>{ clearTimeout(timer); longCard.style.background="#f5efe0"; };
+    longCard.onmouseleave=()=>{ clearTimeout(timer); longCard.style.background="#f5efe0"; };
+    // 交互③：双击点赞
+    const doubleArea=document.getElementById('doubleTapArea');
+    let likeCount=0;
+    const likeDisplay=document.getElementById('likeCountDisplay');
+    doubleArea.ondblclick=()=>{ likeCount++; likeDisplay.innerText=likeCount; doubleArea.style.background="#d4e8cc"; setTimeout(()=>{ doubleArea.style.background="#e8f0e3"; },200); };
+</script>
+</body>
+</html>
