@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>神舟二十号·204天紧急救援</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+            background: #020617;
+            overflow: hidden;
+        }
+
+        .pages-container {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            background: #020617;
+        }
+
+        .page {
+            scroll-snap-align: start;
+            min-height: 100vh;
+            padding: 44px 24px 56px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: linear-gradient(145deg, #fefaf0 0%, #fff4e6 100%);
+            border-bottom: 1px solid #ffdeae;
+        }
+
+        .page:nth-child(even) {
+            background: linear-gradient(135deg, #fff9ef 0%, #fff1e2 100%);
+        }
+
+        .tag {
+            display: inline-block;
+            background: #ffecd6;
+            color: #c2410c;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 40px;
+            margin-bottom: 20px;
+            align-self: flex-start;
+            border: 0.5px solid #ffbc7a;
+            letter-spacing: 0.3px;
+        }
+
+        h1 {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #1e293b;
+            margin-bottom: 18px;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #b45309;
+            border-left: 5px solid #f97316;
+            padding-left: 16px;
+            margin: 18px 0 14px;
+        }
+
+        .sub {
+            font-size: 16px;
+            color: #545f3e;
+            border-left: 4px solid #fdba74;
+            padding-left: 14px;
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        .card {
+            background: rgba(255, 248, 235, 0.96);
+            border-radius: 40px;
+            padding: 20px;
+            margin: 12px 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border: 1px solid #ffdead;
+        }
+
+        .stat-number {
+            font-size: 52px;
+            font-weight: 800;
+            color: #ea580c;
+            display: inline-block;
+            margin-right: 8px;
+            line-height: 1;
+        }
+
+        .footer {
+            font-size: 11px;
+            text-align: center;
+            color: #b9a577;
+            margin-top: 32px;
+        }
+
+        .emoji-big {
+            font-size: 70px;
+            text-align: center;
+            margin: 12px 0;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.45;
+            color: #2c2b26;
+        }
+
+        /* 轮盘样式 互动1 */
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .wheel {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #f97316 0% 25%, #fdba74 25% 50%, #fed7aa 50% 75%, #ffedd5 75% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            margin-bottom: 18px;
+        }
+        .wheel-inner {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22px;
+            color: #c2410c;
+            box-shadow: inset 0 0 0 3px #ffedd5;
+        }
+        .wheel-hint {
+            font-size: 14px;
+            background: #fffbee;
+            padding: 12px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+        }
+        .wheel-msg {
+            background: #fffbee;
+            border-left: 4px solid #f97316;
+            padding: 14px;
+            border-radius: 24px;
+            margin-top: 16px;
+            display: none;
+            font-weight: 500;
+        }
+
+        /* 按压蓄力条 互动2 */
+        .pressure-area {
+            background: #e7dfcf;
+            border-radius: 60px;
+            padding: 12px;
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        .pressure-bar {
+            height: 48px;
+            background: #fdebd0;
+            border-radius: 48px;
+            overflow: hidden;
+            position: relative;
+        }
+        .pressure-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #fb923c, #dc2626);
+            border-radius: 48px;
+            transition: width 0.05s linear;
+        }
+        .pressure-text {
+            text-align: center;
+            margin-top: 12px;
+            font-weight: 700;
+            color: #7c2d12;
+        }
+        .pressure-result {
+            background: #fff4e0;
+            border-radius: 28px;
+            padding: 16px;
+            margin-top: 18px;
+            display: none;
+            border: 1px solid #ffcd94;
+        }
+
+        /* 滑动时间轴 互动3 */
+        .timeline-slider {
+            background: #f9efdf;
+            border-radius: 40px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #713f12;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: #fbc48c;
+            border-radius: 10px;
+            outline: none;
+        }
+        input[type="range"]:focus {
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #ea580c;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+        .timeline-desc {
+            margin-top: 20px;
+            background: #fff7e8;
+            padding: 16px;
+            border-radius: 24px;
+            font-weight: 500;
+            transition: 0.1s;
+        }
+
+        .quote-block {
+            background: #fff2e3;
+            border-radius: 28px;
+            padding: 18px;
+            margin: 16px 0;
+            font-weight: 500;
+        }
+
+        button, .clickable {
+            cursor: pointer;
+        }
+
+        .pages-container::-webkit-scrollbar {
+            width: 4px;
+            background: #e7dac8;
+        }
+        .pages-container::-webkit-scrollbar-thumb {
+            background: #f97316;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="pages-container">
+    <!-- 第1页：封面 -->
+    <div class="page">
+        <span class="tag">🛸 人类首次太空应急换乘</span>
+        <h1>神舟二十号<br>204天紧急救援</h1>
+        <div class="sub">舷窗裂纹 · 换乘飞船 · 平安归来</div>
+        <div class="emoji-big">🧑‍🚀🚀🌠</div>
+        <div class="card">
+            <span class="stat-number">204天</span> 在轨驻留<br>
+            <span class="stat-number">9小时</span> 决策换乘<br>
+            🔥 太空烧烤 · 小鼠战友
+        </div>
+        <p>从碎片撞击到换乘救援飞船，陈冬、张陆、蔡旭哲经历人类航天史上最具挑战的204天。人民日报2026年4月深度回溯。</p>
+        <div class="footer">↑ 向上滑动 · 解锁天地救援全过程</div>
+    </div>
+
+    <!-- 第2页：互动① 旋转轮盘 · 应急事件概率 -->
+    <div class="page">
+        <h2>🌀 转动应急轮盘</h2>
+        <div class="sub">每一位航天员都在应对未知风险</div>
+        <div class="wheel-container">
+            <div class="wheel" id="emergencyWheel">
+                <div class="wheel-inner">转动</div>
+            </div>
+            <div class="wheel-hint">👇 点击轮盘 · 模拟危机抉择</div>
+            <div id="wheelMessage" class="wheel-msg"></div>
+        </div>
+        <div class="quote-block">
+            ✦ 2025年7月，空间站舷窗被微小碎片击中，出现3mm裂纹。<br>
+            ✦ 地面中心与乘组紧急会商，9小时内启动换乘程序。<br>
+            ✦ 这是载人航天史上第一次“在轨更换母船”。
+        </div>
+    </div>
+
+    <!-- 第3页：互动② 按压蓄力 · 救援发射倒计时 -->
+    <div class="page">
+        <h2>🚀 按压蓄力 · 紧急发射</h2>
+        <div class="sub">长按蓄力条，感受地面救援飞船点火时刻</div>
+        <div class="pressure-area" id="pressureZone">
+            <div class="pressure-bar">
+                <div class="pressure-fill" id="pressureFill"></div>
+            </div>
+            <div class="pressure-text" id="pressureInstruction">👇 手指长按区域 蓄满救援能量</div>
+        </div>
+        <div id="pressureResult" class="pressure-result"></div>
+        <div class="quote-block">
+            🚨 长征二号F 丙改救援箭 8月紧急发射，6.5小时后与空间站完成快速对接。<br>
+            “我们准备好了，接战友回家。” —— 酒泉发射指挥中心
+        </div>
+    </div>
+
+    <!-- 第4页：互动③ 滑动时间轴 · 204天关键节点 -->
+    <div class="page">
+        <h2>📅 滑动时间轴</h2>
+        <div class="sub">拨动滑块，重温204天救援足迹</div>
+        <div class="timeline-slider">
+            <div class="slider-label">
+                <span>🕒 2025.4 发射</span>
+                <span>🛸 裂纹出现</span>
+                <span>🚀 救援对接</span>
+                <span>🏠 11月返回</span>
+            </div>
+            <input type="range" id="timelineRange" min="0" max="100" value="0" step="1">
+            <div id="timelineDesc" class="timeline-desc">
+                🌟 神舟二十号发射入轨，开启空间站轮换任务
+            </div>
+        </div>
+        <div class="quote-block">
+            💬 “此生入华夏，我之幸运。” — 陈冬出舱后第一句话<br>
+            💬 “你们安全，我们就放心了。” — 张陆回应地面
+        </div>
+    </div>
+
+    <!-- 第5页：温情与科技 · 太空烟火气 -->
+    <div class="page">
+        <h2>🔥 太空“烟火气”</h2>
+        <div class="sub">危机之中更显温度</div>
+        <div class="card">
+            🍖 <strong>太空烧烤</strong> — 利用微波加热装置，鸡翅油脂在微重力下形成金色油珠，陈冬说“这是宇宙最香的烤翅”。<br><br>
+            🐭 <strong>小鼠战友</strong> — 张陆将豆浆分给实验小鼠，“它们也在为人类深空探索贡献生命”。
+        </div>
+        <div class="emoji-big">🌾✨🥛</div>
+        <p>实验小鼠存活率、链霉菌抗生素产量均创空间站新高，为未来火星农场奠定基础。</p>
+    </div>
+
+    <!-- 第6页：总结与致敬 -->
+    <div class="page">
+        <h2>🌌 从应急换乘到星辰大海</h2>
+        <div class="card">
+            <span class="stat-number">1</span> 首次载人应急换乘<br>
+            <span class="stat-number">204</span> 天极限驻留<br>
+            <span class="stat-number">0</span> 失误 · 天地协同奇迹
+        </div>
+        <p>神舟二十号任务验证了我国完全自主的太空应急救援体系，让中国空间站成为“最安全太空港湾”。<br><br>
+        🧑‍🚀 航天员：陈冬、张陆、蔡旭哲<br>
+        🛰️ 地面团队：北京航天飞控中心 · 酒泉救援系统</p>
+        <div class="footer">新闻来源：人民日报 2026.04.23 深度特稿 | 中国载人航天工程办公室</div>
+    </div>
+</div>
+
+<script>
+    // 互动① 旋转轮盘 - 不同角度展示不同应急事件
+    const wheel = document.getElementById('emergencyWheel');
+    const wheelMsg = document.getElementById('wheelMessage');
+    let currentRotation = 0;
+    const events = [
+        { text: "🛸 舷窗被碎片击中 · 立即启动封闭舱段", color: "#f97316" },
+        { text: "📡 通信短暂中断 · 备用链路切换成功", color: "#fdba74" },
+        { text: "⚡ 环控生保报警 · 乘组手动复位", color: "#fed7aa" },
+        { text: "🚀 紧急换乘决策 · 救援飞船提前发射", color: "#ffedd5" }
+    ];
+    function getRandomEvent() {
+        return events[Math.floor(Math.random() * events.length)];
+    }
+    function rotateWheel() {
+        const extra = 720 + Math.random() * 360;
+        currentRotation += extra;
+        wheel.style.transform = `rotate(${currentRotation}deg)`;
+        const randomEvent = getRandomEvent();
+        wheelMsg.style.display = 'block';
+        wheelMsg.innerHTML = `🔔 轮盘结果：${randomEvent.text}`;
+        setTimeout(() => {
+            wheelMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+    }
+    wheel.addEventListener('click', rotateWheel);
+    wheel.addEventListener('touchstart', (e) => { e.preventDefault(); rotateWheel(); });
+
+    // 互动② 按压蓄力 - 模拟救援发射能量条
+    const pressureZone = document.getElementById('pressureZone');
+    const fillDiv = document.getElementById('pressureFill');
+    const pressureInstruction = document.getElementById('pressureInstruction');
+    const pressureResultDiv = document.getElementById('pressureResult');
+    let pressInterval = null;
+    let currentPower = 0;
+    let isPressing = false;
+
+    function resetPressureBar(resetFill = true) {
+        if (pressInterval) clearInterval(pressInterval);
+        isPressing = false;
+        if (resetFill) {
+            currentPower = 0;
+            fillDiv.style.width = '0%';
+        }
+        pressureInstruction.innerText = '👇 长按区域 蓄满救援能量';
+        pressureInstruction.style.color = '#7c2d12';
+    }
+
+    function startPress() {
+        if (isPressing) return;
+        isPressing = true;
+        pressureResultDiv.style.display = 'none';
+        currentPower = 0;
+        fillDiv.style.width = '0%';
+        pressureInstruction.innerText = '⚡ 持续按压 · 能量上升中 ⚡';
+        pressInterval = setInterval(() => {
+            if (currentPower < 100) {
+                currentPower += 4.5;
+                if (currentPower > 100) currentPower = 100;
+                fillDiv.style.width = currentPower + '%';
+                if (currentPower >= 100) {
+                    clearInterval(pressInterval);
+                    isPressing = false;
+                    pressureInstruction.innerText = '✅ 救援能量已蓄满！飞船发射！';
+                    pressureResultDiv.style.display = 'block';
+                    pressureResultDiv.innerHTML = '🚀 长征二号F救援箭点火升空！6.5小时后与空间站对接，神舟二十号乘组通过转位通道完成人类首次太空换乘。';
+                    setTimeout(() => {
+                        pressureResultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 50);
+                }
+            } else {
+                clearInterval(pressInterval);
+                isPressing = false;
+            }
+        }, 35);
+    }
+
+    function stopPress() {
+        if (!isPressing) return;
+        if (pressInterval) clearInterval(pressInterval);
+        if (currentPower < 100 && currentPower > 0) {
+            pressureInstruction.innerText = '❄️ 蓄力中断 · 救援未达阈值 再试一次';
+            pressureResultDiv.style.display = 'block';
+            pressureResultDiv.innerHTML = '⚠️ 未达到发射能量，必须蓄满100%才能启动应急救援箭。再次长按蓄力！';
+            setTimeout(() => {
+                if (pressureResultDiv) pressureResultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 30);
+        }
+        resetPressureBar(true);
+    }
+
+    pressureZone.addEventListener('mousedown', startPress);
+    pressureZone.addEventListener('mouseup', stopPress);
+    pressureZone.addEventListener('mouseleave', stopPress);
+    pressureZone.addEventListener('touchstart', (e) => { e.preventDefault(); startPress(); });
+    pressureZone.addEventListener('touchend', stopPress);
+    pressureZone.addEventListener('touchcancel', stopPress);
+
+    // 互动③ 滑动时间轴
+    const rangeSlider = document.getElementById('timelineRange');
+    const timelineDescDiv = document.getElementById('timelineDesc');
+    const timelineStages = [
+        { range: [0, 19], text: "🚀 2025年4月 · 神舟二十号发射入轨，乘组进驻问天实验舱，开展空间科学实验。" },
+        { range: [20, 44], text: "🛸 2025年7月 · 空间站舷窗被毫米级碎片撞击，出现细微裂纹，乘组紧急封闭舱段，启动应急程序。" },
+        { range: [45, 69], text: "🚨 2025年8月 · 长征二号F救援箭紧急发射，快速交会对接，创下全球最快载人救援响应纪录。" },
+        { range: [70, 89], text: "🍖 2025年9-10月 · 等待返回窗口期，乘组进行太空烧烤、小鼠喂食，展现人类韧性。" },
+        { range: [90, 100], text: "🏠 2025年11月 · 神舟二十号乘组换乘救援舱安全返回东风着陆场，任务圆满成功。" }
+    ];
+    function updateTimeline(value) {
+        const val = parseInt(value, 10);
+        let active = timelineStages[timelineStages.length-1];
+        for(let stage of timelineStages) {
+            if(val >= stage.range[0] && val <= stage.range[1]) {
+                active = stage;
+                break;
+            }
+        }
+        timelineDescDiv.innerHTML = active.text;
+    }
+    rangeSlider.addEventListener('input', (e) => {
+        updateTimeline(e.target.value);
+    });
+    updateTimeline(rangeSlider.value);
+
+    // 禁止图片/菜单干扰
+    const allInteractive = document.querySelectorAll('.wheel, .pressure-area, .timeline-slider');
+    allInteractive.forEach(el => {
+        el.addEventListener('contextmenu', (e) => e.preventDefault());
+        el.addEventListener('dragstart', (e) => e.preventDefault());
+    });
+</script>
+</body>
+</html>
