@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>橙星科技 · 校园招聘</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            background: linear-gradient(135deg, #FFF5EB 0%, #FFEDE0 100%);
+            overflow-x: hidden;
+        }
+
+        .pages-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+            scroll-behavior: smooth;
+        }
+
+        .page {
+            scroll-snap-align: start;
+            min-height: 100vh;
+            padding: 60px 28px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            background: rgba(255,245,235,0.92);
+        }
+
+        .page:first-child {
+            padding-top: 140px;
+            justify-content: flex-start;
+        }
+
+        /* 顶部朋友圈封面图 */
+        .moments-cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 280px;
+            background-size: cover;
+            background-position: center 30%;
+            z-index: 0;
+            pointer-events: none;
+            border-bottom-left-radius: 28px;
+            border-bottom-right-radius: 28px;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(2px);
+            border-radius: 32px;
+            padding: 24px;
+            margin: 12px 0;
+            box-shadow: 0 8px 32px rgba(196, 75, 30, 0.1);
+            border: 1px solid rgba(255, 217, 181, 0.6);
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #C44B1E 0%, #F15A24 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+        h2 {
+            font-size: 1.9rem;
+            color: #C44B1E;
+            margin: 20px 0 12px;
+            position: relative;
+            display: inline-block;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #F15A24, #FFB347);
+            border-radius: 3px;
+        }
+        .sub {
+            color: #B45A2E;
+            margin-bottom: 32px;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        button, .clickable {
+            background: linear-gradient(135deg, #F15A24 0%, #E04410 100%);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(241, 90, 36, 0.3);
+        }
+        button:active, .clickable:active {
+            transform: scale(0.96);
+            box-shadow: 0 2px 6px rgba(241, 90, 36, 0.3);
+        }
+
+        .clickable-small {
+            background: rgba(255, 255, 255, 0.9);
+            color: #C44B1E;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            margin: 6px 0;
+            display: inline-block;
+            cursor: pointer;
+            font-weight: 500;
+            border: 1px solid #FFD9B5;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .clickable-small:active {
+            transform: scale(0.95);
+            background: #FFF0E6;
+        }
+
+        .flex-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .deco-dot {
+            position: absolute;
+            background: radial-gradient(circle, #F15A24 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        .deco-dot-1 { width: 200px; height: 200px; top: -80px; right: -80px; }
+        .deco-dot-2 { width: 150px; height: 150px; bottom: -50px; left: -50px; }
+
+        .swipe-area {
+            overflow-x: auto;
+            white-space: nowrap;
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            scrollbar-width: thin;
+            scrollbar-color: #F15A24 #FFE0B5;
+        }
+        .swipe-area::-webkit-scrollbar {
+            height: 4px;
+        }
+        .swipe-area::-webkit-scrollbar-track {
+            background: #FFE0B5;
+            border-radius: 4px;
+        }
+        .swipe-area::-webkit-scrollbar-thumb {
+            background: #F15A24;
+            border-radius: 4px;
+        }
+
+        .swipe-card {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            min-width: 230px;
+            white-space: normal;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 1px solid #FFD9B5;
+            color: #C44B1E;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .swipe-card:active {
+            transform: scale(0.98);
+        }
+
+        .job-item {
+            background: linear-gradient(135deg, #FFF9F2 0%, #FFF5EB 100%);
+            padding: 16px 20px;
+            border-radius: 28px;
+            margin: 12px 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: #B7410E;
+            border: 1px solid #FFD9B5;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .job-item:active {
+            transform: scale(0.98);
+            background: #FFF0E6;
+        }
+
+        .scratch-card {
+            background: #D9C8B0;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            margin: 16px 0;
+        }
+        .scratch-cover {
+            background: repeating-linear-gradient(45deg, #A89A7A, #A89A7A 20px, #C4B498 20px, #C4B498 40px);
+            border-radius: 24px;
+            padding: 32px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .scratch-result {
+            background: #FFF5EB;
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+        }
+        .prize-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #F15A24;
+            margin: 16px 0;
+        }
+        .scratch-card.scratched .scratch-cover {
+            display: none;
+        }
+        .scratch-card:not(.scratched) .scratch-result {
+            display: none;
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            color: white;
+            text-align: center;
+            padding: 14px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            z-index: 999;
+            transition: 0.2s;
+            opacity: 0;
+            pointer-events: none;
+            font-weight: 500;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        .modal-content {
+            background: white;
+            width: 85%;
+            max-width: 300px;
+            border-radius: 48px;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            animation: modalPop 0.2s ease;
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-content p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #2C3E50;
+        }
+        .close-modal {
+            margin-top: 24px;
+            background: #F0EDE8;
+            color: #C44B1E;
+            box-shadow: none;
+        }
+        footer {
+            margin-top: 30px;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #CC8866;
+        }
+
+        .photo-placeholder {
+            margin: 20px 0 16px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.08);
+            background: #FFECDC;
+        }
+        .photo-placeholder img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .story-photo-card {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            margin: 8px 0;
+            border: 1px solid #FFD9B5;
+        }
+        .story-photo-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+        .story-photo-card .text {
+            padding: 12px 16px;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .page {
+            animation: fadeUp 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+<div class="pages-container" id="app">
+    <!-- 图1：顶部朋友圈封面图，只展示上半区 -->
+    <div class="moments-cover" style="background-image: url('images/pic1.jpg');"></div>
+    
+    <div class="deco-dot deco-dot-1"></div>
+    <div class="deco-dot deco-dot-2"></div>
+
+    <!-- 第1页 封面 -->
+    <div class="page">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <span style="font-size: 4rem;">🧡</span>
+        </div>
+        <h1 style="text-align: center;">来这发光</h1>
+        <h1 style="text-align: center; font-size: 2rem;">橙星科技</h1>
+        <p class="sub" style="text-align: center;">2026 校园招聘 · 正式启动</p>
+        <button id="enterBtn" style="margin-top: 40px;">🎯 点击上车 →</button>
+        
+        <!-- 图2 -->
+        <div class="photo-placeholder" style="margin-top: 32px;">
+            <img src="images/pic2.jpg" alt="校园风景">
+        </div>
+    </div>
+
+    <!-- 第2页 公司福利 -->
+    <div class="page">
+        <h2>🍊 一家不想正经的公司</h2>
+        <div class="swipe-area" id="swipeArea">
+            <div class="swipe-card">🐱 猫狗双全<br><span style="font-size: 0.8rem; color:#B45A2E;">上班随便撸</span></div>
+            <div class="swipe-card">🍕 零食自由<br><span style="font-size: 0.8rem; color:#B45A2E;">下午茶无限</span></div>
+            <div class="swipe-card">💰 18薪<br><span style="font-size: 0.8rem; color:#B45A2E;">不画饼打钱</span></div>
+        </div>
+        <!-- 图3 -->
+        <div class="photo-placeholder" style="margin: 16px 0 8px;">
+            <img src="images/pic3.jpg" alt="校园活动">
+        </div>
+        <button id="moreBenefitBtn">👀 看看还有啥</button>
+    </div>
+
+    <!-- 第3页 热招岗位 -->
+    <div class="page">
+        <h2>📢 就差你了</h2>
+        <div id="jobOperator" class="job-item">🎮 运营官 · 会整活就行</div>
+        <div id="jobDesigner" class="job-item">🎨 设计师 · 审美大于软件</div>
+        <div id="jobDeveloper" class="job-item">💻 开发猿 · bug少就行</div>
+        <!-- 图4 -->
+        <div class="photo-placeholder" style="margin: 18px 0 6px;">
+            <img src="images/pic4.jpg" alt="学校教学楼">
+        </div>
+        <div style="text-align: center; margin-top: 12px; font-size: 2rem;">🧑‍💻 👩‍🎨 👩‍🚀</div>
+    </div>
+
+    <!-- 第4页 员工故事 -->
+    <div class="page">
+        <h2>🌟 快乐是真的</h2>
+        <div class="swipe-area" id="storySwipe">
+            <div class="swipe-card"><b>⭐ 小张 · 运营</b><br>入职一年 养了两只猫 每天准点下班</div>
+            <div class="swipe-card"><b>⭐ 小李 · 设计</b><br>实习转正 年薪翻倍 甲方夸我审美好</div>
+        </div>
+        <!-- 图5 -->
+        <div class="story-photo-card">
+            <img src="images/pic5.jpg" alt="毕业合影">
+            <div class="text" style="padding: 10px 14px; color:#B45A2E; font-size:0.8rem;">📸 橙星校招宣讲会 · 同学们热情爆棚</div>
+        </div>
+        <button id="fullStoryBtn">📖 看完整故事</button>
+    </div>
+
+    <!-- 第5页 趣味测试 -->
+    <div class="page">
+        <h2>🧪 测测你的岗位</h2>
+        <div class="glass-card">
+            <p><strong>🍽️ 和朋友聚餐，你负责___？</strong></p>
+            <div class="flex-btns">
+                <div id="testTopic" class="clickable-small">选话题 🎤</div>
+                <div id="testRestaurant" class="clickable-small">选餐厅 🍽️</div>
+            </div>
+        </div>
+        <div class="glass-card">
+            <p><strong>🌙 加班到晚上，你最想___？</strong></p>
+            <div class="flex-btns">
+                <div id="testEat" class="clickable-small">吃火锅 🔥</div>
+                <div id="testSleep" class="clickable-small">睡觉 😴</div>
+            </div>
+        </div>
+        <button id="testResultBtn">🎁 查看结果</button>
+        <!-- 图6 -->
+        <div class="photo-placeholder" style="margin-top: 20px;">
+            <img src="images/pic6.jpg" alt="校园一角">
+        </div>
+    </div>
+
+    <!-- 第6页 刮刮乐彩蛋页 -->
+    <div class="page">
+        <h2 style="text-align: center; display: block;">🎁 面试能量包</h2>
+        <p style="text-align: center; margin-bottom: 20px;">点击刮开涂层，解锁你的专属福利</p>
+        
+        <div id="scratchCard1" class="scratch-card">
+            <div class="scratch-cover">👇 点击刮卡 👇</div>
+            <div class="scratch-result">
+                <span style="font-size: 2rem;">🎫</span>
+                <div class="prize-name">一面直通卡</div>
+                <p>跳过笔试，直接进入第一轮面试</p>
+            </div>
+        </div>
+
+        <div id="scratchCard2" class="scratch-card">
+            <div class="scratch-cover">👇 再刮一张 👇</div>
+            <div class="scratch-result">
+                <span style="font-size: 2rem;">📚</span>
+                <div class="prize-name">面试干货包</div>
+                <p>大厂面试题库+简历模板</p>
+            </div>
+        </div>
+
+        <button id="claimPrizeBtn" class="clickable-small" style="width: auto; margin: 20px auto 0; display: inline-block; background: #F15A24; color: white;">🎁 领取我的福利</button>
+        <p style="text-align: center; font-size: 0.7rem; margin-top: 16px;">*每人限领一次，福利将在投递后由HR发放</p>
+    </div>
+
+    <!-- 第7页 投递方式 -->
+    <div class="page">
+        <h2>📮 三步上车</h2>
+        <div class="glass-card">
+            <p style="text-align: center;">1️⃣ 投简历<br>↓<br>2️⃣ 一面（不正经聊天）<br>↓<br>3️⃣ 二面（正经聊聊）<br>↓<br>💌 offer</p>
+        </div>
+        <button id="copyEmailBtn">📋 复制投递邮箱</button>
+        <div style="text-align: center; margin: 20px 0; padding: 16px; background: rgba(255,255,255,0.6); border-radius: 28px;">
+            <span>📱 长按下方区域保存海报</span>
+        </div>
+        <footer>✨ 邮箱直达 HR · hr@chengxing-tech.com ✨</footer>
+    </div>
+
+    <!-- 第8页 结尾彩蛋 -->
+    <div class="page">
+        <div style="text-align: center; font-size: 3rem;">🎉🍊🧡</div>
+        <h2 style="text-align: center; margin-top: 20px;">最后一个秘密</h2>
+        <p style="margin: 20px 0; font-size: 1.1rem; text-align: center; color: #B45A2E;">转发这个H5给朋友<br>你俩面试都加10分 😎</p>
+        <button id="finalBtn">🎉 我就要去橙星</button>
+    </div>
+</div>
+
+<!-- 弹窗 -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <p id="modalText">消息内容</p>
+        <button class="close-modal close-modal-btn">关闭</button>
+    </div>
+</div>
+<div id="toastMsg" class="toast-msg">✨ 已复制</div>
+
+<script>
+    const modal = document.getElementById('modal');
+    const modalText = document.getElementById('modalText');
+    const toast = document.getElementById('toastMsg');
+
+    function showModal(msg) {
+        modalText.innerText = msg;
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+    }
+    function closeModal() {
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
+    }
+    function showToast(msg) {
+        toast.innerText = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => { toast.style.opacity = '0'; }, 1500);
+    }
+
+    document.querySelector('.close-modal-btn').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    let scratchedCount = 0;
+    const card1 = document.getElementById('scratchCard1');
+    const card2 = document.getElementById('scratchCard2');
+
+    function handleScratch(card) {
+        if (!card.classList.contains('scratched')) {
+            card.classList.add('scratched');
+            scratchedCount++;
+            showToast('🎉 恭喜获得福利！');
+        }
+    }
+
+    card1.addEventListener('click', () => handleScratch(card1));
+    card2.addEventListener('click', () => handleScratch(card2));
+
+    document.getElementById('claimPrizeBtn').addEventListener('click', () => {
+        if (scratchedCount === 0) {
+            showModal('🎁 先刮开卡片再领取福利哦～');
+        } else {
+            showModal('🎉 福利已记录！投递简历后HR会联系你发放福利。祝面试顺利！');
+        }
+    });
+
+    document.getElementById('enterBtn').addEventListener('click', () => {
+        document.querySelector('.pages-container').scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+        showToast('🚀 出发，橙星欢迎你');
+    });
+    document.getElementById('moreBenefitBtn').addEventListener('click', () => {
+        showModal('🎁 隐藏福利：年度旅游✈️ + 健身补贴🏋️ + 心理咨询🌿 + 每月一天任性假');
+    });
+    document.getElementById('swipeArea').addEventListener('scroll', () => {
+        if (!window.swipeHint) { window.swipeHint = true; showToast('👈👉 左右滑动看更多福利'); }
+    });
+    document.getElementById('jobOperator').addEventListener('click', () => {
+        showModal('🎮 运营官：网感强/爱冲浪/会整活，b站小红书深度用户优先');
+    });
+    document.getElementById('jobDesigner').addEventListener('click', () => {
+        showModal('🎨 设计师：审美好/会说话/不玻璃心，Figma或PS基础即可');
+    });
+    document.getElementById('jobDeveloper').addEventListener('click', () => {
+        showModal('💻 开发猿：任意语言基础，bug少就行，配macbook pro');
+    });
+    document.getElementById('fullStoryBtn').addEventListener('click', () => {
+        showModal('📖 小张：去年校招入职运营，一年策划3个爆款活动，实现猫狗自由。\n小李：设计实习生转正，主导品牌升级，薪资翻倍。');
+    });
+    document.getElementById('storySwipe').addEventListener('scroll', () => {
+        if (!window.storyHint) { window.storyHint = true; showToast('✨ 左右滑动看更多学长学姐故事'); }
+    });
+    document.getElementById('testTopic').addEventListener('click', () => {
+        showModal('🎤 你是话题王！适合做运营/市场，橙星需要你活跃气氛');
+    });
+    document.getElementById('testRestaurant').addEventListener('click', () => {
+        showModal('🍽️ 细节控！产品经理预定，团队决策缺你不可');
+    });
+    document.getElementById('testEat').addEventListener('click', () => {
+        showModal('🔥 能量满满，欢迎加入销售/商务拓展团队');
+    });
+    document.getElementById('testSleep').addEventListener('click', () => {
+        showModal('😴 养生但靠谱，来橙星做测试或技术支持，平衡生活');
+    });
+    document.getElementById('testResultBtn').addEventListener('click', () => {
+        showModal('🎉 测试结果：你是“橙星热血青年”！\n推荐岗位：运营/产品/设计，投递简历立刻匹配');
+    });
+    document.getElementById('copyEmailBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText('hr@chengxing-tech.com');
+        showToast('✅ 已复制：hr@chengxing-tech.com');
+    });
+    document.getElementById('finalBtn').addEventListener('click', () => {
+        showModal('🎉 简历砸过来！邮箱：hr@chengxing-tech.com 等你来撩');
+    });
+</script>
+</body>
+</html>
